@@ -52,6 +52,13 @@ private:
     void run();        // the thread's loop
     void tickOnce();
 
+    // One helper per step of tickOnce() (all assume the mutex is held).
+    void wakeSleepers();
+    void assignIdleCores();
+    void runBusyCores();
+    void releaseCores();
+    int countBusyCores() const;
+
     int numCores;
     uint64_t delayPerExec;
     CPUClock& clock;
