@@ -46,7 +46,7 @@ void CPUCore::runTick(uint64_t delayPerExec) {
     }
 
     // Otherwise run one instruction, then start the delay.
-    process->executeNextInstruction();
+    process->executeNext();
     delayCounter = delayPerExec;
 }
 
