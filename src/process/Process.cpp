@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "../instructions/Instructions.h"
+#include "../instructions/Instruction.h"
 
 namespace {
     // Format: (MM/DD/YYYY HH:MM:SSAM)

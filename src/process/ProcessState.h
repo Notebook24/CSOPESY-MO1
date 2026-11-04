@@ -1,15 +1,6 @@
 #pragma once
-<<<<<<< HEAD
-
 #include <string>
 
-enum class ProcessState {READY, RUNNING, SLEEPING, FINISHED};
-
-std::string processStateToString(ProcessState S);
-=======
-#include <string>
-
-// Owner: Trisha
 enum class ProcessState {
     READY,      // waiting in the ready queue
     RUNNING,    // currently on a core
@@ -19,4 +10,3 @@ enum class ProcessState {
 
 // "READY", "RUNNING", "SLEEPING", "FINISHED"
 std::string processStateToString(ProcessState state);
->>>>>>> origin/main

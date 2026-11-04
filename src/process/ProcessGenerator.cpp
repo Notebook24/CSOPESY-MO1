@@ -41,7 +41,7 @@ std::shared_ptr<Process> ProcessGenerator::createProcess(const std::string& name
         count = dist(rng_);
     }
 
-    auto program = InstructionFactory::generateProgram(count, name);
+    auto program = InstructionFactory::generateProgram(name, config_.minIns, config_.maxIns);   
     auto process = std::make_shared<Process>(id, name, std::move(program));
 
     if (!table_.add(process)) 
