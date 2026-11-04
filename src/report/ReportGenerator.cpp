@@ -40,7 +40,8 @@ std::string ReportGenerator::buildReport(const ProcessTable& table, const Schedu
         if (p->name().size() > nameWidth) nameWidth = p->name().size();
         if (p->isFinished()) {
             finished.push_back(p);
-        } else if (p->state() == ProcessState::RUNNING) {
+        } else {
+            // RUNNING, READY or SLEEPING: still alive, so list it
             running.push_back(p);
         }
     }
@@ -54,8 +55,13 @@ std::string ReportGenerator::buildReport(const ProcessTable& table, const Schedu
     for (size_t i = 0; i < running.size(); i++) {
         const std::shared_ptr<Process>& p = running[i];
         out << std::left << std::setw(static_cast<int>(nameWidth)) << p->name() << "  "
-            << stamp(p->createdAt()) << "  Core: " << p->coreId() << "  "
-            << p->currentLine() << " / " << p->totalLines() << "\n";
+            << stamp(p->createdAt()) << "  Core: ";
+        if (p->coreId() >= 0) {
+            out << p->coreId();
+        } else {
+            out << "-";
+        }
+        out << "  " << p->currentLine() << " / " << p->totalLines() << "\n";
     }
     out << "\nFinished processes:\n";
     for (size_t i = 0; i < finished.size(); i++) {
