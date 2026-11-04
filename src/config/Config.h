@@ -1,23 +1,21 @@
-#pragma once
+#pragma once        // prevents this header file from being included more than once.
+
 #include <cstdint>
 #include <string>
 
-// Owner: Trisha
-// Plain data. Fields are public on purpose (simple).
-class Config {
-public:
-    Config();   // sets the defaults from the spec
 
-    // Reads a space-separated file (e.g. "config.txt").
-    // Returns false and fills errorMessage if the file is missing, a key is
-    // missing, a value is not a number, or a value is out of range.
-    bool loadFromFile(const std::string& path, std::string& errorMessage);
+enum class SchedulerType {FCFS, RR};
 
-    int numCpu;                  // 1..128
-    std::string scheduler;       // "fcfs" or "rr"
-    uint64_t quantumCycles;      // 1..2^32
-    uint64_t batchProcessFreq;   // 1..2^32
-    uint64_t minIns;             // 1..2^32
-    uint64_t maxIns;             // 1..2^32, must be >= minIns
-    uint64_t delaysPerExec;      // 0..2^32
+struct Config {
+    uint32_t numCpu = 4;
+    SchedulerType scheduler = SchedulerType::RR;
+    uint64_t quantumCycles = 5;
+    uint64_t batchProcessFreq = 1;
+    uint64_t minIns = 1000;
+    uint64_t maxIns = 2000;
+    uint64_t delayPerExec = 0; 
 };
+
+bool loadConfig(const std::string& path, Config& out, std::string& error);
+
+std::string schedulerToString(SchedulerType s); // converts the scheduler enum into a readable string

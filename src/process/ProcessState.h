@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 
-// Owner: Trisha
 enum class ProcessState {
     READY,      // waiting in the ready queue
     RUNNING,    // currently on a core

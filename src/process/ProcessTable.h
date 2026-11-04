@@ -1,31 +1,28 @@
 #pragma once
+
+#include <map>
 #include <memory>
 #include <mutex>
 #include <string>
 #include <vector>
-#include "process/Process.h"
 
-// Owner: Trisha
-// Registry of EVERY process (ready, running, sleeping, finished).
-// Locks internally, safe from both threads.
+#include "Process.h"
+
+
 class ProcessTable {
 public:
-    ProcessTable();
+    bool add(const std::shared_ptr<Process>& process);
 
-    // Returns false (and adds nothing) if the name is already used.
-    bool add(std::shared_ptr<Process> process);
-
-    // nullptr if not found.
     std::shared_ptr<Process> find(const std::string& name) const;
 
-    // Copy of the list, in creation order.
-    std::vector<std::shared_ptr<Process>> getAll() const;
+    bool exists(const std::string& name) const;
 
-    // Hands out 1, 2, 3, ... each call.
-    int nextId();
+    std::vector<std::shared_ptr<Process>> all() const;
+
+    size_t size() const;
 
 private:
-    mutable std::mutex mutex;
-    std::vector<std::shared_ptr<Process>> processes;
-    int idCounter;
+    mutable std::mutex mutex_;
+    std::map<std::string, std::shared_ptr<Process>> byName_;
+    std::vector<std::shared_ptr<Process>> ordered_;
 };
