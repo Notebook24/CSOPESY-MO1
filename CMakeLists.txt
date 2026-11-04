@@ -18,7 +18,10 @@ configure_file(${CMAKE_SOURCE_DIR}/config.txt ${CMAKE_BINARY_DIR}/config.txt COP
 # ---------- scheduler tests (Karl) ----------
 add_executable(test_scheduler
     tests/test_scheduler.cpp
-    tests/stubs/Process.cpp          # To be removed once Trisha's real Process.cpp exists
+    #tests/stubs/Process.cpp          # To be removed once Trisha's real Process.cpp exists
+    src/process/Process.cpp
+    src/process/SymbolTable.cpp
+    src/process/ProcessState.cpp
     src/scheduler/CPUClock.cpp
     src/scheduler/CPUCore.cpp
     src/scheduler/Scheduler.cpp

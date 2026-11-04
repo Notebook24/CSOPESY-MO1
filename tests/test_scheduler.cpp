@@ -26,7 +26,7 @@ public:
 class FakeSleepInstruction : public Instruction {
 public:
     FakeSleepInstruction(int ticks) : ticks(ticks) {}
-    void execute(Process& process) override { process.setSleepTicks(ticks); }
+    void execute(Process& process) override { process.sleepFor((uint8_t)ticks); }
     std::string toString() const override { return "sleep"; }
 private:
     int ticks;
@@ -88,7 +88,7 @@ public:
     // Runs at the end of every tick (scheduler thread).
     void onTick(uint64_t tick) {
         for (size_t i = 0; i < tracked.size(); i++) {
-            states[i].push_back(tracked[i]->getState());
+            states[i].push_back(tracked[i]->state());
             if (finishTick[i] == 0 && tracked[i]->isFinished()) {
                 finishTick[i] = tick;
             }

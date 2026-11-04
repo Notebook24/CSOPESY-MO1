@@ -118,10 +118,10 @@ void Scheduler::wakeSleepers() {
 
     for (size_t i = 0; i < sleepingList.size(); i++) {
         std::shared_ptr<Process> process = sleepingList[i];
-        process->decrementSleepTicks();
 
-        if (process->getSleepTicks() <= 0) {
-            process->setState(ProcessState::READY);
+        // tickSleep() counts down one tick. At 0 it sets READY itself
+        // and returns true.
+        if (process->tickSleep()) {
             readyQueue.push_back(process);
         } else {
             stillSleeping.push_back(process);
@@ -169,11 +169,10 @@ void Scheduler::releaseCores() {
         std::shared_ptr<Process> process = cores[i].getProcess();
 
         if (process->isFinished()) {
-            // Process already marked itself FINISHED. Just free the core.
+            process->setCoreId(-1);   // her markFinished() doesn't clear it
             cores[i].release();
-        } else if (process->getSleepTicks() > 0) {
-            // SLEEP ran this tick: leave the core right now.
-            process->setState(ProcessState::SLEEPING);
+        } else if (process->isSleeping()) {
+            // SLEEP already set the state to SLEEPING
             process->setCoreId(-1);
             cores[i].release();
             sleepingList.push_back(process);
