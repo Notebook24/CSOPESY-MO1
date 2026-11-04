@@ -145,7 +145,7 @@ int main() {
         std::cout << PROMPT;
         if (!std::getline(std::cin, line)) break; // EOF (Ctrl+Z / Ctrl+D)
 
-        std::vector<std::string> tokens = StringUtils::split(StringUtils::trim(line), ' ');
+        std::vector<std::string> tokens = StringUtils::splitWords(StringUtils::trim(line));
         if (tokens.empty()) continue;
 
         if (!handleCommand(tokens, initialized)) break;

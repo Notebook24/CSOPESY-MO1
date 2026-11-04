@@ -1,14 +1,16 @@
 #pragma once
+#include <cstdint>
+#include <string>
 #include "instructions/Instruction.h"
 
-// SLEEP(X) - sleeps the process for X (uint8) CPU ticks and relinquishes the CPU.
-// The Process/Scheduler is responsible for counting the ticks down and re-queuing.
+// Owner: Alain
+// SLEEP(X): calls process.setSleepTicks(X). Does NOT change the state;
+// the scheduler sees sleepTicks > 0 and takes the process off the core.
 class SleepInstruction : public Instruction {
 public:
     explicit SleepInstruction(uint8_t ticks);
 
     void execute(Process& process) override;
-    InstructionType type() const override { return InstructionType::SLEEP; }
     std::string toString() const override;
 
 private:

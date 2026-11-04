@@ -2,29 +2,20 @@
 #include <string>
 #include <vector>
 
-namespace StringUtils {
+// Owner: Alain
+class StringUtils {
+public:
+    // Removes spaces, tabs and newlines from both ends.
+    static std::string trim(const std::string& text);
 
-// Removes leading/trailing whitespace.
-std::string trim(const std::string& s);
+    // Returns a lowercase copy.
+    static std::string toLower(const std::string& text);
 
-// Lowercases ASCII characters.
-std::string toLower(const std::string& s);
+    // Splits on any whitespace and skips empty pieces.
+    // "screen -s  p1" -> {"screen", "-s", "p1"}
+    static std::vector<std::string> splitWords(const std::string& text);
 
-// Splits on a delimiter. Empty tokens are skipped ("a  b" -> {"a","b"}).
-std::vector<std::string> split(const std::string& s, char delim = ' ');
-
-// Joins tokens using a separator.
-std::string join(const std::vector<std::string>& parts, const std::string& sep);
-
-bool startsWith(const std::string& s, const std::string& prefix);
-
-// Removes one pair of surrounding double quotes: "\"rr\"" -> "rr".
-std::string stripQuotes(const std::string& s);
-
-// Strict unsigned parse: digits only, no sign, no overflow. Returns false on failure.
-bool tryParseUInt(const std::string& s, unsigned long long& out);
-
-// Zero-pads a number: padNumber(7, 2) -> "07" (useful for p01, p02, ...).
-std::string padNumber(unsigned long long n, int width);
-
-} // namespace StringUtils
+    // Pads with leading zeros up to a minimum width.
+    // padNumber(3, 2) -> "03", padNumber(120, 2) -> "120"
+    static std::string padNumber(int value, int width);
+};

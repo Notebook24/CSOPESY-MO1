@@ -4,7 +4,7 @@
 SleepInstruction::SleepInstruction(uint8_t ticks) : ticks_(ticks) {}
 
 void SleepInstruction::execute(Process& process) {
-    process.sleepFor(ticks_);
+    process.setSleepTicks(ticks_);
 }
 
 std::string SleepInstruction::toString() const {

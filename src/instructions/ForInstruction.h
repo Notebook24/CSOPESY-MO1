@@ -1,28 +1,26 @@
 #pragma once
+#include <memory>
+#include <vector>
 #include "instructions/Instruction.h"
 
-// FOR([instructions], repeats) - nestable (max 3 levels, enforced by InstructionFactory).
+// Owner: Alain
+// FOR([instructions], repeats). Can nest up to 3 levels.
 //
-// Recommended use: Process stores the FLATTENED program (InstructionFactory::flatten),
-// so each CPU tick executes exactly one simple instruction. That keeps the instruction
-// pointer, "Current instruction line / Lines of code", SLEEP, and RR preemption simple.
-// execute() below is only a fallback that runs the whole loop in a single call.
+// The scheduler never runs a ForInstruction directly. The factory calls
+// expand() so the Process only ever receives a FLAT list. That way every
+// instruction costs exactly one step and the instruction pointer stays simple.
 class ForInstruction : public Instruction {
 public:
-    ForInstruction(std::vector<InstructionPtr> body, uint32_t repeats);
+    ForInstruction(const std::vector<std::shared_ptr<Instruction>>& body, int repeats);
 
+    // Returns body repeated 'repeats' times, with any nested FORs also expanded.
+    std::vector<std::shared_ptr<Instruction>> expand() const;
+
+    // Runs the whole loop at once. Only for tests, not used by the scheduler.
     void execute(Process& process) override;
-    InstructionType type() const override { return InstructionType::FOR; }
     std::string toString() const override;
 
-    void expand(std::vector<InstructionPtr>& out) const override;
-    std::size_t unrolledSize() const override;
-    int nestingDepth() const override;
-
-    uint32_t repeats() const { return repeats_; }
-    const std::vector<InstructionPtr>& body() const { return body_; }
-
 private:
-    std::vector<InstructionPtr> body_;
-    uint32_t repeats_;
+    std::vector<std::shared_ptr<Instruction>> body;
+    int repeats;
 };

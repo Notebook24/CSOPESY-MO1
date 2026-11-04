@@ -7,7 +7,7 @@ PrintInstruction::PrintInstruction(std::string message, std::string variable)
 void PrintInstruction::execute(Process& process) {
     std::string out = message_;
     if (!variable_.empty()) {
-        out += std::to_string(process.symbols().get(variable_));
+        out += std::to_string(process.getSymbols().get(variable_));
     }
     process.addLog(out);
 }
