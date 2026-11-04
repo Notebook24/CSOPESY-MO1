@@ -61,29 +61,32 @@ void CommandHandler::handleInitialize() {
 
     Config cfg;
     std::string error;
-    if (!cfg.loadFromFile(kConfigPath, error)) {
+    if (!loadConfig(kConfigPath, cfg, error)) {
         std::cout << "Initialization failed: " << error << "\n";
-        return;  // stay uninitialized so the user can fix config.txt and retry
+        return;
     }
     config_ = cfg;
 
     clock_ = std::make_unique<CPUClock>();
     table_ = std::make_unique<ProcessTable>();
-    if (config_.scheduler == "fcfs") {
-        scheduler_.reset(new FCFSScheduler(config_.numCpu, config_.delaysPerExec, *clock_));
+    if (config_.scheduler == SchedulerType::FCFS) {
+        scheduler_.reset(new FCFSScheduler(config_.numCpu, config_.delayPerExec, *clock_));
     } else {
-        scheduler_.reset(new RRScheduler(config_.numCpu, config_.delaysPerExec, *clock_,
+        scheduler_.reset(new RRScheduler(config_.numCpu, config_.delayPerExec, *clock_,
                                          config_.quantumCycles));
     }
-    generator_ = std::make_unique<ProcessGenerator>(*table_, *scheduler_, config_.batchProcessFreq,
-                                                    config_.minIns, config_.maxIns);
+
+    Scheduler* sched = scheduler_.get();
+    generator_ = std::make_unique<ProcessGenerator>(config_, *table_,
+        [sched](std::shared_ptr<Process> p) { sched->addProcess(p); });
+
     ProcessGenerator* gen = generator_.get();
-    scheduler_->setTickHook([gen](uint64_t tick) { gen->onTick(tick); });
+    scheduler_->setTickHook([gen](uint64_t tick) { gen->tick(tick); });
     scheduler_->start();
 
     initialized_ = true;
     std::cout << "Initialized: " << config_.numCpu << " CPU(s), scheduler "
-              << config_.scheduler << ".\n";
+              << schedulerToString(config_.scheduler) << ".\n";
 }
 
 void CommandHandler::handleScreen(const ParsedCommand& cmd) {
@@ -106,7 +109,7 @@ void CommandHandler::handleScreen(const ParsedCommand& cmd) {
     }
     const std::string& name = cmd.args[1];  // process names are case-sensitive
 
-    Process* proc = table_->find(name);
+    std::shared_ptr<Process> proc = table_->find(name);
     if (flag == "-s") {
         if (proc) { std::cout << "Process " << name << " already exists.\n"; return; }
         proc = generator_->createProcess(name);

@@ -1,4 +1,4 @@
-#include "config.h"
+#include "config/Config.h"
 
 #include <algorithm>
 #include <cctype>
@@ -135,7 +135,7 @@ bool loadConfig(const std::string& path, Config& out, std::string& error) {
             ok = parseInRange(key, value, 1, MAX_U32_RANGE, n, err);
             if (ok) 
                 cfg.maxIns = n; 
-        } else if (key == "delay-per-exec") {
+        } else if (key == "delays-per-exec") {
             ok = parseInRange(key, value, 0, MAX_U32_RANGE, n, err);
             if (ok) 
                 cfg.delayPerExec = n; 
@@ -152,7 +152,7 @@ bool loadConfig(const std::string& path, Config& out, std::string& error) {
         seen.insert(key);
     } 
 
-    static const char* required[] = {"num-cpu", "scheduler", "quantum-cycles", "batch-process-freq", "min-ins", "max-ins", "delay-per-exec"};
+    static const char* required[] = {"num-cpu", "scheduler", "quantum-cycles", "batch-process-freq", "min-ins", "max-ins", "delays-per-exec"};
 
     for (const char* r : required) {
         if (!seen.count(r)) {

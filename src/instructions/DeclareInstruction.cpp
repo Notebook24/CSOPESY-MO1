@@ -5,7 +5,7 @@ DeclareInstruction::DeclareInstruction(std::string variable, uint16_t value)
     : variable_(std::move(variable)), value_(value) {}
 
 void DeclareInstruction::execute(Process& process) {
-    process.getSymbols().set(variable_, value_);
+    process.symbols().set(variable_, value_);
 }
 
 std::string DeclareInstruction::toString() const {

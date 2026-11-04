@@ -24,22 +24,25 @@ std::string stamp(const std::string& ts) {
 }  // namespace
 
 std::string ReportGenerator::buildReport(const ProcessTable& table, const Scheduler& scheduler) {
-    const int total = scheduler.getNumCores();
-    const int busy  = std::min(scheduler.getBusyCores(), total);
+    const int total = scheduler.getTotalCores();
+    const int busy  = scheduler.getBusyCores();
     const int avail = total - busy;
     const int util  = total > 0 ? (busy * 100) / total : 0;
 
-    std::vector<Process*> all = table.getAll();
-    std::sort(all.begin(), all.end(),
-              [](const Process* a, const Process* b) { return a->getId() < b->getId(); });
-
-    std::vector<const Process*> running, finished;
+    // all() is already in creation order
+    std::vector<std::shared_ptr<Process>> all = table.all();
+    std::vector<std::shared_ptr<Process>> running;
+    std::vector<std::shared_ptr<Process>> finished;
     size_t nameWidth = 0;
-    for (const Process* p : all) {
-        nameWidth = std::max(nameWidth, p->getName().size());
-        if (p->isFinished())                         finished.push_back(p);
-        else if (p->getState() == ProcessState::RUNNING) running.push_back(p);
-        // READY / SLEEPING processes are waiting, not on a core: not listed.
+
+    for (size_t i = 0; i < all.size(); i++) {
+        const std::shared_ptr<Process>& p = all[i];
+        if (p->name().size() > nameWidth) nameWidth = p->name().size();
+        if (p->isFinished()) {
+            finished.push_back(p);
+        } else if (p->state() == ProcessState::RUNNING) {
+            running.push_back(p);
+        }
     }
 
     std::ostringstream out;
@@ -48,16 +51,18 @@ std::string ReportGenerator::buildReport(const ProcessTable& table, const Schedu
         << "Cores available: " << avail << "\n\n"
         << kRule << "\n"
         << "Running processes:\n";
-    for (const Process* p : running) {
-        out << std::left << std::setw(static_cast<int>(nameWidth)) << p->getName() << "  "
-            << stamp(p->getStartTime()) << "  Core: " << p->getCoreId() << "  "
-            << p->getInstructionPointer() << " / " << p->getTotalInstructions() << "\n";
+    for (size_t i = 0; i < running.size(); i++) {
+        const std::shared_ptr<Process>& p = running[i];
+        out << std::left << std::setw(static_cast<int>(nameWidth)) << p->name() << "  "
+            << stamp(p->createdAt()) << "  Core: " << p->coreId() << "  "
+            << p->currentLine() << " / " << p->totalLines() << "\n";
     }
     out << "\nFinished processes:\n";
-    for (const Process* p : finished) {
-        out << std::left << std::setw(static_cast<int>(nameWidth)) << p->getName() << "  "
-            << stamp(p->getStartTime()) << "  Finished  "
-            << p->getTotalInstructions() << " / " << p->getTotalInstructions() << "\n";
+    for (size_t i = 0; i < finished.size(); i++) {
+        const std::shared_ptr<Process>& p = finished[i];
+        out << std::left << std::setw(static_cast<int>(nameWidth)) << p->name() << "  "
+            << stamp(p->createdAt()) << "  Finished  "
+            << p->totalLines() << " / " << p->totalLines() << "\n";
     }
     out << kRule << "\n";
     return out.str();

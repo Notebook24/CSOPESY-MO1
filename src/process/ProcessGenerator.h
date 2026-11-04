@@ -8,7 +8,7 @@
 #include <random>
 #include <string>
 
-#include "../config/config.h"
+#include "config/Config.h"
 #include "Process.h"
 #include "ProcessTable.h"
 

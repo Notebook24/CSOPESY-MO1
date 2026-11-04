@@ -17,7 +17,7 @@ Operand Operand::literal(uint16_t v) {
 
 uint16_t Operand::resolve(Process& process) const {
     if (!isVariable) return value;
-    return process.getSymbols().get(name);
+    return process.symbols().get(name);
 }
 
 std::string Operand::toString() const {

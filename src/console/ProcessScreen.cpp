@@ -8,16 +8,19 @@
 #include "process/Process.h"
 
 void ProcessScreen::printSmi() const {
-    std::cout << "Process name: " << process_.getName() << "\n";
-    std::cout << "ID: " << process_.getId() << "\n";
+    std::cout << "Process name: " << process_.name() << "\n";
+    std::cout << "ID: " << process_.id() << "\n";
     std::cout << "Logs:\n";
-    for (const auto& entry : process_.getLogs()) std::cout << entry << "\n";
+    for (const auto& entry : process_.logs()) {
+        std::cout << entry.timestamp << " Core:" << entry.coreId
+                  << " \"" << entry.message << "\"\n";
+    }
     std::cout << "\n";
     if (process_.isFinished()) {
         std::cout << "Finished!\n";
     } else {
-        std::cout << "Current instruction line: " << process_.getInstructionPointer() << "\n";
-        std::cout << "Lines of code: " << process_.getTotalInstructions() << "\n";
+        std::cout << "Current instruction line: " << process_.currentLine() << "\n";
+        std::cout << "Lines of code: " << process_.totalLines() << "\n";
     }
     std::cout << "\n";
 }
