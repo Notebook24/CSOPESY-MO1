@@ -31,7 +31,7 @@ csopesy-emulator/
 │   │   └── SymbolTable.h/.cpp      # per-process variables (uint16, clamped 0–65535)
 │   │
 │   ├── instructions/           # Barebones instructions
-│   │   ├── Instruction.h           # abstract base: execute(Process&)
+│   │   ├── Instruction.h/.cpp           # abstract base: execute(Process&)
 │   │   ├── PrintInstruction.h/.cpp
 │   │   ├── DeclareInstruction.h/.cpp
 │   │   ├── AddInstruction.h/.cpp
@@ -39,6 +39,7 @@ csopesy-emulator/
 │   │   ├── SleepInstruction.h/.cpp
 │   │   ├── ForInstruction.h/.cpp   # nested up to 3 levels
 │   │   └── InstructionFactory.h/.cpp # random instruction generation
+│   │   ├── Operand.h/.cpp   # nested up to 3 levels
 │   │
 │   ├── scheduler/              # Scheduler implementation
 │   │   ├── Scheduler.h/.cpp        # abstract base + ready queue
