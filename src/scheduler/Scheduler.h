@@ -20,8 +20,9 @@
 //   3. idle cores take the next process from the ready queue
 //   4. every busy core runs one tick
 //   5. finished -> release | sleeping -> release | preempt -> release + requeue
-//   6. call the tick hook (OUTSIDE the lock)
-//   7. short real-time pause so people can watch it
+//   6. Refill freed cores from the ready queue
+//   7. call the tick hook (OUTSIDE the lock)
+//   8. short real-time pause so people can watch it
 class Scheduler {
 public:
     Scheduler(int numCores, uint64_t delayPerExec, CPUClock& clock);

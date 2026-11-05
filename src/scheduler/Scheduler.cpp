@@ -100,6 +100,7 @@ void Scheduler::tickOnce() {
         assignIdleCores();            // step 3
         runBusyCores();               // step 4
         releaseCores();               // step 5
+        assignIdleCores();            // step 5b: refill cores freed this tick
 
         hookCopy = tickHook;          // copy it so we can call it unlocked
     }
