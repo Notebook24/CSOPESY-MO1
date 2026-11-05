@@ -4,12 +4,12 @@
 
 // TODO(group): fill in full names and the date of your last edit.
 static const char* const kDevelopers[] = {
-    "Ryan",
-    "Trisha",
-    "Karl",
-    "Alain",
+    "Trisha Mae Bendol",
+    "Karl Kristoffer Camato",
+    "Ryan James Malapitan",
+    "Alain Zuriel Marcos",
 };
-static const char* const kLastUpdated = "11-04-2026";
+static const char* const kLastUpdated = "11-05-2026";
 
 void Banner::print() {
     std::cout << "  ____ ____   ___  ____  _____ ______   __\n"
